@@ -3,7 +3,7 @@
 	<head>
 		<title>Azumuta speech recognition tool.</title>
 
-		<link rel="stylesheet" type="text/css" href="css/normalize.css">
+		<link rel="stylesheet" type="text/css" href="normalize.css">
 		<style type="text/css">
 			html, body {
 				margin: 0;
@@ -35,7 +35,7 @@
 			var globalRecognizer;
 			<?php
 				$words = [];
-				$handle = fopen("words.txt", "r");
+				$handle = fopen("../words.txt", "r");
 				while (($line = fgets($handle)) !== false) {
 					array_push($words, trim($line, "\n."));
 					echo "allWords.push('" . trim(strtolower($line), "\n.") . "');";
@@ -44,9 +44,9 @@
 
 		</script>
 
-		<script type="text/javascript" src="script/jquery.js"></script>
-		<script type="text/javascript" src="script/marking.js"></script>
-		<script type="text/javascript" src="script/resultHandling.js"></script>
+		<script type="text/javascript" src="jquery.js"></script>
+		<script type="text/javascript" src="marking.js"></script>
+		<script type="text/javascript" src="../script/resultHandling.js"></script>
 	</head>
 	<body style='width: 100%; height: 100%'>
 		<table style='width: 100%; height: 100%'>
@@ -75,7 +75,7 @@
 					if ($i == 5) {
 						echo '<td colspan="2">';
 						echo '<vosk-recognizer model-url="model-nl.tar.gz" oneshot></vosk-recognizer>';
-						echo '<script src="script/VoskJS.js"></script>';
+						echo '<script src="../script/VoskJS.js"></script>';
 						echo '</td>';
 					}
 
