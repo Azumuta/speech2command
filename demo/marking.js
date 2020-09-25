@@ -10,8 +10,3 @@ function markWord(word, conf) {
 function resetColors() {
 	$('td').css('background-color', 'white');
 }
-
-
-$(document).ready(function(){
-	// todo start listening
-})

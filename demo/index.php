@@ -46,6 +46,10 @@
 
 		<script type="text/javascript" src="jquery.js"></script>
 		<script type="text/javascript" src="marking.js"></script>
+		<script type="text/javascript">
+			const resultHandler = markWord;
+			const resetHandler = resetColors;
+		</script>
 		<script type="text/javascript" src="../script/resultHandling.js"></script>
 	</head>
 	<body style='width: 100%; height: 100%'>
@@ -74,7 +78,7 @@
 
 					if ($i == 5) {
 						echo '<td colspan="2">';
-						echo '<vosk-recognizer model-url="model-nl.tar.gz" oneshot></vosk-recognizer>';
+						// echo '<vosk-recognizer model-url="model-nl.tar.gz" oneshot></vosk-recognizer>';
 						echo '<script src="../script/VoskJS.js"></script>';
 						echo '</td>';
 					}
@@ -84,5 +88,18 @@
 				}
 			?>
 		</table>
+
+
+		<script type="text/javascript">
+			thisRec = new VoskJS.Recognizer("model-nl.tar.gz")
+			thisRec.onresult = result => {
+				if (result.result) {
+					handleResult(result, markWord, resetColors)
+				}
+			}
+			thisRec.getActive().then(active => thisRec.setActive(!active));
+		</script>
+
+
 	</body>
 </html>
