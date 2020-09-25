@@ -1,5 +1,7 @@
+// todo script/VoskJS.js inladen
 
-const allWords = ['volgende', 'vorige']
+const langModel = "model-nl.tar.gz";
+const allWords = ['volgende', 'vorige'];
 const callbacks = [];
 const eventWordMap = {
 	'vorige': 'navigate-backward',
@@ -41,10 +43,10 @@ function sendCommand(w, c) {
 	}
 }
 
-thisRec = new VoskJS.Recognizer("model-nl.tar.gz")
+thisRec = new VoskJS.Recognizer(langModel);
 thisRec.onresult = result => {
 	if (result.result) {
-		handleResult(result, sendCommand)
+		handleResult(result, sendCommand);
 	}
 }
 thisRec.getActive().then(active => thisRec.setActive(!active));
