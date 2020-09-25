@@ -50,7 +50,7 @@
 			const resultHandler = markWord;
 			const resetHandler = resetColors;
 		</script>
-		<script type="text/javascript" src="../script/resultHandling.js"></script>
+		<script type="text/javascript" src="resultHandle_demo.js"></script>
 	</head>
 	<body style='width: 100%; height: 100%'>
 		<table style='width: 100%; height: 100%'>

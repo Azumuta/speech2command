@@ -1,5 +1,5 @@
-// allWords = ['volgende', 'vorige']
 
+const allWords = ['volgende', 'vorige']
 const callbacks = [];
 const eventWordMap = {
 	'vorige': 'navigate-backward',
@@ -29,12 +29,6 @@ function handleResult(res, handleIt, reset=null) {
 			handleIt(x.word, x.conf);
 		}
 	});
-	if (!wordHandled) {
-		// console.log("Got undefined word: " + res.text);
-		if (allWords.includes("<und>")) {
-			handleIt('<und>', 1);
-		}
-	}
 }
 
 function sendCommand(w, c) {
@@ -46,3 +40,11 @@ function sendCommand(w, c) {
 		}
 	}
 }
+
+thisRec = new VoskJS.Recognizer("model-nl.tar.gz")
+thisRec.onresult = result => {
+	if (result.result) {
+		handleResult(result, sendCommand)
+	}
+}
+thisRec.getActive().then(active => thisRec.setActive(!active));
