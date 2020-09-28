@@ -5,6 +5,7 @@
 
 'use strict'
 
+
 var VoskJS = (function() {
 
 	function determineCurrentScript() {
