@@ -1,12 +1,21 @@
 // todo script/VoskJS.js inladen
 
-const langModel = "model-nl.tar.gz";
-const allWords = ['volgende', 'vorige'];
+// const langModel = "model-nl.tar.gz";
+// const allWords = ['volgende', 'vorige'];
 const callbacks = [];
-const eventWordMap = {
-	'vorige': 'navigate-backward',
-	'volgende': 'navigate-forward',
-};
+const allWords = []
+var eventWordMap;
+
+function addToCommands (words, command) {
+	words.forEach(function(w) {
+		eventWordMap[w] = command;
+		allWords.push(w);
+	})
+}
+
+addToCommands(next, 'navigate-forward');
+addToCommands(prev, 'navigate-backward');
+
 
 window.iridium = {};
 window.iridium.onExternalNavigate = (callback) => {
