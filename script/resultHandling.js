@@ -31,15 +31,6 @@ function handleResult(res, handleIt, reset=null) {
 	if (typeof reset === 'function') {
 		reset();
 	}
-	// var wordHandled = false;
-	// res.result.forEach((x) => {
-	// 	console.log(x.word)
-	// 	if (allWords.includes(x.word)) {
-	// 		wordHandled = true;
-	// 		wait = true
-	// 		handleIt(x.word, x.conf);
-	// 	}
-	// });
 	wait = false;
 }
 
@@ -47,13 +38,11 @@ function handleResult(res, handleIt, reset=null) {
 function handlePartial(res, handleIt) {
 	var wordHandled = false;
 	partialBuffer = res.partial;
-	// console.log(partialBuffer);
 	res.partial.split(' ').forEach((x) => {
-		// console.log(x); //// 
 		if (allWords.includes(x)) {
 			wordHandled = true;
 			wait = true
-			handleIt(x.word, 1);
+			handleIt(x);
 			return wordHandled
 		}
 	});
@@ -76,7 +65,6 @@ thisRec = new VoskJS.Recognizer(langModel);
 thisRec.onresult = (result) => {
 
 	if (!wait && result.partial) {
-		// console.log("=P= " + result.partial)
 		if (result.partial != partialBuffer) {
 			handlePartial(result, sendCommand);
 		}
