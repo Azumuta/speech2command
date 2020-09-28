@@ -1,7 +1,3 @@
-// todo script/VoskJS.js inladen
-
-// const langModel = "model-nl.tar.gz";
-// const allWords = ['volgende', 'vorige'];
 const callbacks = [];
 const allWords = []
 var eventWordMap;
@@ -28,19 +24,39 @@ window.iridium.onExternalNavigate = (callback) => {
 };
 
 
+// source: https://davidwalsh.name/javascript-debounce-function
+function debounce(func, wait, immediate) {
+	var timeout;
+	return function() {
+		var context = this, args = arguments;
+		var later = function() {
+			timeout = null;
+			if (!immediate) func.apply(context, args);
+		};
+		var callNow = immediate && !timeout;
+		clearTimeout(timeout);
+		timeout = setTimeout(later, wait);
+		if (callNow) func.apply(context, args);
+	};
+};
+
+
 function handleResult(res, handleIt, reset=null) {
 	if (typeof reset == "function") {
 		reset();
 	}
 	var wordHandled = false;
-	words = res.result;
-	words.forEach((x) => {
-		if (allWords.includes(x.word)) {
-			wordHandled = true;
-			handleIt(x.word, x.conf);
-		}
-	});
+	if (typeof res.result != undefined) {
+		// words = res.result;
+		res.result.forEach((x) => {
+			if (allWords.includes(x.word)) {
+				wordHandled = true;
+				handleIt(x.word, x.conf);
+			}
+		});
+	}
 }
+
 
 function sendCommand(w, c) {
 	if (c >= .5) {
@@ -54,8 +70,9 @@ function sendCommand(w, c) {
 
 thisRec = new VoskJS.Recognizer(langModel);
 thisRec.onresult = result => {
-	if (result.result) {
-		handleResult(result, sendCommand);
-	}
+	debounce(function() { handleResult(result, sendCommand) }, 200);
+	// if (result.result) {
+	// 	handleResult(result, sendCommand);
+	// }
 }
 thisRec.getActive().then(active => thisRec.setActive(!active));
