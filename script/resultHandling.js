@@ -1,7 +1,8 @@
 const callbacks = [];
 const allWords = [];
 var eventWordMap = {};
-var resultBuffer = true;
+var wait = false;
+var partialBuffer = "";
 
 function addToCommands(words, command) {
 	words.forEach(function(w) {
@@ -25,52 +26,42 @@ window.iridium.onExternalNavigate = (callback) => {
 };
 
 
-// source: https://davidwalsh.name/javascript-debounce-function
-// function debounce(func, wait, immediate) {
-// 	var timeout;
-	
-// 	return function() {
-// 		var context = this, args = arguments;
-// 		var later = function() {
-// 			timeout = null;
-// 			if (!immediate) {
-// 				func.apply(context, args);
-// 			}
-// 		};
-// 		var callNow = immediate && !timeout;
-// 		clearTimeout(timeout);
-// 		timeout = setTimeout(later, wait);
-// 		if (callNow) {
-// 			func.apply(context, args);
-// 		}
-// 	};
-// }
-
-
-function resetResultBuffer() {
-	resultBuffer = true;
-}
 
 function handleResult(res, handleIt, reset=null) {
 	if (typeof reset === 'function') {
 		reset();
 	}
-	var wordHandled = false;
-	if (typeof res.result !== "undefined") {
-		// words = res.result;
-		res.result.forEach((x) => {
-			if (allWords.includes(x.word)) {
-				wordHandled = true;
-				handleIt(x.word, x.conf);
-			}
-		});
-	}
-	resultBuffer = false;
-	setTimeout(resetResultBuffer, 1000)
+	// var wordHandled = false;
+	// res.result.forEach((x) => {
+	// 	console.log(x.word)
+	// 	if (allWords.includes(x.word)) {
+	// 		wordHandled = true;
+	// 		wait = true
+	// 		handleIt(x.word, x.conf);
+	// 	}
+	// });
+	wait = false;
 }
 
 
-function sendCommand(w, c) {
+function handlePartial(res, handleIt) {
+	var wordHandled = false;
+	partialBuffer = res.partial;
+	// console.log(partialBuffer);
+	res.partial.split(' ').forEach((x) => {
+		// console.log(x); //// 
+		if (allWords.includes(x)) {
+			wordHandled = true;
+			wait = true
+			handleIt(x.word, 1);
+			return wordHandled
+		}
+	});
+
+}
+
+
+function sendCommand(w, c=0) {
 	// if (c >= .5) {
 	const action = eventWordMap[w];
 	console.log(`${w} detected with confidence ${c}: action ${action}`);
@@ -80,21 +71,20 @@ function sendCommand(w, c) {
 	// }
 }
 
-// const handle = debounce(function(result) {
-// 	handleResult(result, sendCommand); 
-// }, 250, true);
 
 thisRec = new VoskJS.Recognizer(langModel);
 thisRec.onresult = (result) => {
-	if (resultBuffer && (result != resultBuffer)) {
-		resultBuffer = result;
-		handleResult(result, sendCommand);
+
+	if (!wait && result.partial) {
+		// console.log("=P= " + result.partial)
+		if (result.partial != partialBuffer) {
+			handlePartial(result, sendCommand);
+		}
 	}
 	
-	// handle(result);
 
-	// if (result.result) {
-	// 	handleResult(result, sendCommand);
-	// }
+	if (result.result) {
+		handleResult(result, sendCommand);
+	}
 };
 thisRec.getActive().then((active) => thisRec.setActive(!active));
